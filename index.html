@@ -1,0 +1,2449 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartStay – Indian College Student Hostel Management System</title>
+  <meta name="description" content="Modern, practical Indian College Student Hostel Management System featuring animated live counters, digital outpass, maintenance complaints, weekly mess menu, and student portal.">
+
+  <!-- Google Fonts: Plus Jakarta Sans & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Chart.js CDN for Attendance & Statistics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <style>
+    /* ==========================================================================
+       SMARTSTAY DESIGN SYSTEM:
+       DEEP MODERN DARK + ELECTRIC CYAN / BLUE / INDIGO + INDIAN COLLEGE HOSTEL
+       ========================================================================== */
+    :root {
+      /* Deep Modern Background Palette */
+      --bg-void: #05070c;
+      --bg-dark: #090d16;
+      --bg-surface: #0f1626;
+      --bg-card: rgba(14, 20, 34, 0.78);
+      --bg-card-hover: rgba(20, 30, 52, 0.88);
+      --bg-input: #0b111e;
+
+      /* Electric Accent Colors (from previous beloved design) */
+      --cyan: #38bdf8;
+      --cyan-hover: #0ea5e9;
+      --cyan-glow: rgba(56, 189, 248, 0.25);
+      --blue: #3b82f6;
+      --indigo: #6366f1;
+      --purple: #a855f7;
+      --purple-glow: rgba(168, 85, 247, 0.25);
+
+      /* Semantic Accents */
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --rose: #f43f5e;
+
+      /* Borders & Shadows */
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-glow: rgba(56, 189, 248, 0.3);
+      --border-purple: rgba(168, 85, 247, 0.3);
+      --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.7);
+      --shadow-cyan: 0 0 25px rgba(56, 189, 248, 0.18);
+      --shadow-purple: 0 0 25px rgba(168, 85, 247, 0.18);
+
+      /* Typography */
+      --font-display: 'Outfit', sans-serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-subtle: #64748b;
+
+      /* Radii */
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+      --radius-full: 9999px;
+
+      --transition-smooth: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: 15px;
+      scroll-behavior: smooth;
+      background-color: var(--bg-void);
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg-void);
+      color: var(--text-main);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-void); }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: var(--radius-full); }
+    ::-webkit-scrollbar-thumb:hover { background: var(--cyan); }
+
+    a { color: inherit; text-decoration: none; transition: color 0.2s ease; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; outline: none; }
+
+    input, select, textarea {
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      background-color: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1rem;
+      outline: none;
+      transition: all 0.2s ease;
+      width: 100%;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 15px var(--cyan-glow);
+    }
+
+    /* Glassmorphic Card Utility */
+    .glass-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      transition: all var(--transition-smooth);
+      position: relative;
+    }
+    .glass-card:hover {
+      border-color: var(--border-glow);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-card), var(--shadow-cyan);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 0.8rem 1.6rem;
+      border-radius: var(--radius-md);
+      transition: all var(--transition-smooth);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn-glow-cyan {
+      background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%);
+      color: #040814;
+      font-weight: 800;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.35);
+    }
+    .btn-glow-cyan:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 30px rgba(56, 189, 248, 0.55);
+    }
+    .btn-glass {
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      backdrop-filter: blur(10px);
+    }
+    .btn-glass:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--cyan);
+      color: var(--cyan);
+      transform: translateY(-2px);
+    }
+    .btn-sm {
+      padding: 0.45rem 1rem;
+      font-size: 0.82rem;
+      border-radius: var(--radius-sm);
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.3rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .badge-cyan { background: rgba(56, 189, 248, 0.15); color: var(--cyan); border: 1px solid rgba(56, 189, 248, 0.3); }
+    .badge-purple { background: rgba(168, 85, 247, 0.15); color: var(--purple); border: 1px solid rgba(168, 85, 247, 0.3); }
+    .badge-emerald { background: rgba(16, 185, 129, 0.15); color: var(--emerald); border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge-amber { background: rgba(245, 158, 11, 0.15); color: var(--amber); border: 1px solid rgba(245, 158, 11, 0.3); }
+    .badge-rose { background: rgba(244, 63, 94, 0.15); color: var(--rose); border: 1px solid rgba(244, 63, 94, 0.3); }
+
+    /* Section Headers */
+    .section-wrap {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 5.5rem 2rem;
+      position: relative;
+    }
+    .section-header-center {
+      text-align: center;
+      max-width: 760px;
+      margin: 0 auto 3.5rem auto;
+    }
+    .section-badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      color: var(--cyan);
+      padding: 0.4rem 1.1rem;
+      border-radius: var(--radius-full);
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 2.75rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      line-height: 1.15;
+      margin-bottom: 0.85rem;
+    }
+    .section-title span {
+      background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .section-subtitle {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      line-height: 1.6;
+    }
+
+    /* ==========================================================================
+       TOP NOTIFICATION TICKER & EMERGENCY BAR
+       ========================================================================== */
+    .top-emergency-strip {
+      background: #060911;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      padding: 0.5rem 2rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .emergency-link {
+      color: var(--cyan);
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    /* Sticky Floating Header */
+    .main-header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(9, 13, 22, 0.88);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 0.85rem 2rem;
+    }
+    .nav-inner {
+      max-width: 1380px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+    .brand-logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--cyan), var(--indigo));
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #040814;
+      font-size: 1.25rem;
+      box-shadow: 0 0 15px var(--cyan-glow);
+    }
+    .brand-text h2 {
+      font-family: var(--font-display);
+      font-size: 1.45rem;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+    }
+    .brand-text h2 span { color: var(--cyan); }
+    .brand-text p {
+      font-size: 0.7rem;
+      color: var(--text-subtle);
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .nav-links-menu {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      list-style: none;
+    }
+    .nav-links-menu a {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: color 0.2s ease;
+    }
+    .nav-links-menu a:hover {
+      color: var(--cyan);
+    }
+
+    /* ==========================================================================
+       1. HERO SECTION (HD Hostel Background + Entrance Animation)
+       ========================================================================== */
+    .hero-container {
+      min-height: 85vh;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6rem 2rem 4rem 2rem;
+      overflow: hidden;
+    }
+    .hero-bg-image {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-image: url('https://images.unsplash.com/photo-1541829070764-84a7d30dd3f3?auto=format&fit=crop&w=1920&q=85');
+      background-size: cover;
+      background-position: center;
+      filter: brightness(0.35) saturate(1.15);
+      transform: scale(1.03);
+      animation: heroPan 24s infinite alternate ease-in-out;
+      z-index: 1;
+    }
+    @keyframes heroPan {
+      from { transform: scale(1.02); }
+      to { transform: scale(1.08); }
+    }
+    .hero-gradient-overlay {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: radial-gradient(circle at center, rgba(9, 13, 22, 0.4) 0%, rgba(5, 7, 12, 0.96) 85%),
+                  linear-gradient(to bottom, rgba(5, 7, 12, 0.2) 0%, #05070c 100%);
+      z-index: 2;
+    }
+    .hero-inner-content {
+      position: relative;
+      z-index: 3;
+      max-width: 920px;
+      margin: 0 auto;
+      text-align: center;
+      animation: heroEntrance 1s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes heroEntrance {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .hero-hostel-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(14, 20, 34, 0.85);
+      border: 1px solid var(--border-glow);
+      backdrop-filter: blur(12px);
+      padding: 0.45rem 1.35rem;
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--cyan);
+      box-shadow: 0 0 20px var(--cyan-glow);
+      margin-bottom: 1.5rem;
+    }
+    .hero-title-main {
+      font-family: var(--font-display);
+      font-size: 4.4rem;
+      font-weight: 900;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      margin-bottom: 1.25rem;
+    }
+    .hero-title-main span {
+      background: linear-gradient(135deg, #ffffff 0%, #38bdf8 50%, #c084fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-lead-text {
+      font-size: 1.25rem;
+      color: #cbd5e1;
+      max-width: 760px;
+      margin: 0 auto 2.5rem auto;
+      line-height: 1.6;
+    }
+    .hero-buttons-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    /* ==========================================================================
+       2. ANIMATED STATISTICS / COUNTERS SECTION (VERY IMPORTANT)
+       ========================================================================== */
+    .stats-counter-strip {
+      max-width: 1380px;
+      margin: -3rem auto 0 auto;
+      padding: 0 2rem;
+      position: relative;
+      z-index: 10;
+    }
+    .stats-grid-counters {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+    }
+    .stat-counter-card {
+      background: rgba(14, 20, 34, 0.85);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      transition: all var(--transition-smooth);
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-counter-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--cyan), var(--indigo));
+      opacity: 0;
+      transition: opacity var(--transition-smooth);
+    }
+    .stat-counter-card:hover {
+      border-color: var(--cyan);
+      box-shadow: var(--shadow-cyan);
+      transform: translateY(-5px);
+    }
+    .stat-counter-card:hover::before {
+      opacity: 1;
+    }
+    .counter-icon {
+      font-size: 1.75rem;
+      color: var(--cyan);
+      margin-bottom: 0.65rem;
+      text-shadow: 0 0 15px var(--cyan-glow);
+    }
+    .counter-number {
+      font-family: var(--font-display);
+      font-size: 3rem;
+      font-weight: 900;
+      color: #fff;
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+    .counter-number span.suffix {
+      color: var(--cyan);
+    }
+    .counter-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* ==========================================================================
+       3. DAILY HOSTEL UPDATES & LIVE BULLETIN TICKER
+       ========================================================================== */
+    .updates-bulletin-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+      margin-top: 3.5rem;
+    }
+    .bulletin-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      border-left: 4px solid var(--cyan);
+      transition: all var(--transition-smooth);
+    }
+    .bulletin-box:hover {
+      border-color: var(--cyan);
+      transform: translateY(-3px);
+    }
+    .bulletin-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.4rem;
+    }
+    .bulletin-title {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+    .bulletin-text {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* ==========================================================================
+       4. HOSTEL FEATURES (10 Attractive Cards)
+       ========================================================================== */
+    .features-grid-10 {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1.5rem;
+    }
+    .feature-card-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem 1.25rem;
+      text-align: center;
+      transition: all var(--transition-smooth);
+    }
+    .feature-card-item:hover {
+      border-color: var(--cyan);
+      box-shadow: var(--shadow-cyan);
+      transform: translateY(-5px);
+    }
+    .feature-icon-box {
+      width: 58px;
+      height: 58px;
+      border-radius: 16px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      color: var(--cyan);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      margin: 0 auto 1.15rem auto;
+      transition: all var(--transition-smooth);
+    }
+    .feature-card-item:hover .feature-icon-box {
+      background: var(--cyan);
+      color: #040814;
+      box-shadow: 0 0 20px var(--cyan-glow);
+    }
+    .feature-card-item h4 {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.35rem;
+    }
+    .feature-card-item p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* ==========================================================================
+       5. ROOM SECTION (2, 3, 4 Sharing Realistic Indian College Accommodations)
+       ========================================================================== */
+    .rooms-layout-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+    .hostel-room-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: all var(--transition-smooth);
+    }
+    .hostel-room-card:hover {
+      border-color: var(--cyan);
+      box-shadow: var(--shadow-cyan);
+      transform: translateY(-6px);
+    }
+    .room-media-frame {
+      position: relative;
+      height: 240px;
+      overflow: hidden;
+    }
+    .room-media-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+    .hostel-room-card:hover .room-media-frame img {
+      transform: scale(1.08);
+    }
+    .room-sharing-badge {
+      position: absolute;
+      top: 1.15rem;
+      left: 1.15rem;
+      background: rgba(9, 13, 22, 0.85);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--cyan);
+    }
+    .room-content-body {
+      padding: 1.75rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .room-content-body h3 {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 0.4rem;
+    }
+    .room-facilities-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin: 1.1rem 0 1.5rem 0;
+    }
+    .facility-pill {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 0.3rem 0.75rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .room-card-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 1.25rem;
+    }
+
+    /* ==========================================================================
+       6. MESS SECTION (Weekly Indian College Menu)
+       ========================================================================== */
+    .mess-day-pills {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      margin-bottom: 2rem;
+    }
+    .mess-day-tab {
+      padding: 0.65rem 1.4rem;
+      border-radius: var(--radius-full);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.88rem;
+      transition: all var(--transition-smooth);
+      white-space: nowrap;
+    }
+    .mess-day-tab:hover { color: #fff; border-color: rgba(255, 255, 255, 0.25); }
+    .mess-day-tab.active {
+      background: linear-gradient(135deg, var(--cyan), var(--blue));
+      color: #040814;
+      border-color: var(--cyan);
+      box-shadow: 0 0 20px var(--cyan-glow);
+    }
+
+    .mess-cards-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .mess-food-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: all var(--transition-smooth);
+    }
+    .mess-food-card:hover {
+      border-color: var(--cyan);
+      box-shadow: var(--shadow-cyan);
+      transform: translateY(-4px);
+    }
+    .mess-food-media {
+      position: relative;
+      height: 190px;
+      overflow: hidden;
+    }
+    .mess-food-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+    .mess-food-card:hover .mess-food-media img {
+      transform: scale(1.08);
+    }
+    .meal-time-tag {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background: rgba(9, 13, 22, 0.85);
+      backdrop-filter: blur(10px);
+      padding: 0.35rem 0.8rem;
+      border-radius: var(--radius-full);
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--cyan);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+    .mess-food-content {
+      padding: 1.5rem;
+      flex: 1;
+    }
+    .mess-food-content h4 {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 0.85rem;
+    }
+    .food-dishes-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      font-size: 0.88rem;
+    }
+    .food-dish-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #cbd5e1;
+      padding-bottom: 0.45rem;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+    }
+    .diet-icon-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid;
+    }
+    .diet-icon-dot.veg { border-color: var(--emerald); }
+    .diet-icon-dot.veg::after { content: ''; width: 6px; height: 6px; background: var(--emerald); border-radius: 50%; }
+    .diet-icon-dot.non-veg { border-color: var(--rose); }
+    .diet-icon-dot.non-veg::after { content: ''; width: 6px; height: 6px; background: var(--rose); border-radius: 50%; }
+
+    /* ==========================================================================
+       7. NOTICE BOARD (Realistic Badges: NEW / IMPORTANT / UPDATE)
+       ========================================================================== */
+    .notices-grid-board {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+    .notice-board-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      transition: all var(--transition-smooth);
+      border-left: 4px solid var(--cyan);
+    }
+    .notice-board-card:hover {
+      border-color: var(--cyan);
+      box-shadow: var(--shadow-cyan);
+      transform: translateY(-3px);
+    }
+    .notice-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.65rem;
+    }
+    .notice-board-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.45rem;
+      line-height: 1.35;
+    }
+    .notice-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    /* ==========================================================================
+       8. STUDENT DASHBOARD PREVIEW
+       ========================================================================== */
+    .dashboard-preview-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-glow);
+      border-radius: var(--radius-xl);
+      padding: 2.25rem;
+      box-shadow: var(--shadow-card), var(--shadow-cyan);
+    }
+    .dash-profile-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 1.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1.25rem;
+    }
+    .student-avatar-box {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+    .student-avatar-img {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--cyan);
+      box-shadow: 0 0 15px var(--cyan-glow);
+    }
+    .dash-kpis-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    .dash-kpi-item {
+      background: rgba(11, 17, 30, 0.65);
+      border: 1px solid var(--border-subtle);
+      padding: 1.25rem;
+      border-radius: var(--radius-md);
+    }
+    .dash-kpi-item h5 {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.25rem;
+    }
+    .dash-kpi-item .kpi-val {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    /* Data Table inside Dashboard Preview */
+    .table-responsive-box {
+      overflow-x: auto;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      background: rgba(11, 17, 30, 0.45);
+    }
+    .portal-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.85rem;
+    }
+    .portal-table th {
+      background: #0d1424;
+      color: var(--text-muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      letter-spacing: 0.5px;
+      padding: 0.9rem 1.25rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .portal-table td {
+      padding: 0.9rem 1.25rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+      vertical-align: middle;
+    }
+
+    /* ==========================================================================
+       9. UNIQUE STUDENT FEATURES GRID (12 Features)
+       ========================================================================== */
+    .unique-features-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+    }
+    .unique-feature-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1.4rem;
+      transition: all var(--transition-smooth);
+      cursor: pointer;
+    }
+    .unique-feature-box:hover {
+      border-color: var(--cyan);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-cyan);
+    }
+    .unique-feature-box i {
+      font-size: 1.6rem;
+      color: var(--cyan);
+      margin-bottom: 0.75rem;
+    }
+    .unique-feature-box h4 {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.35rem;
+    }
+    .unique-feature-box p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* ==========================================================================
+       10. FOOTER
+       ========================================================================== */
+    .main-footer {
+      background: #030509;
+      border-top: 1px solid var(--border-subtle);
+      padding: 4.5rem 2rem 2rem 2rem;
+    }
+    .footer-content {
+      max-width: 1380px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1.2fr;
+      gap: 3rem;
+      margin-bottom: 3.5rem;
+    }
+    .footer-col h4 {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 1.15rem;
+    }
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+    .footer-social-icons {
+      display: flex;
+      gap: 0.85rem;
+      margin-top: 1.5rem;
+    }
+    .social-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: 1rem;
+      transition: all var(--transition-smooth);
+    }
+    .social-btn:hover {
+      background: var(--cyan);
+      color: #040814;
+      border-color: var(--cyan);
+      box-shadow: 0 0 15px var(--cyan-glow);
+    }
+
+    /* Interactive Modals */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(5, 7, 12, 0.88);
+      backdrop-filter: blur(12px);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-dialog {
+      background: #0f1626;
+      border: 1px solid var(--border-glow);
+      border-radius: var(--radius-xl);
+      width: 100%;
+      max-width: 540px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), var(--shadow-cyan);
+      padding: 2.25rem;
+      animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes modalPop {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Toast Notification */
+    #toast-wrap {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 3000;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .toast-msg {
+      background: #0f1626;
+      border: 1px solid var(--cyan);
+      padding: 0.9rem 1.4rem;
+      border-radius: var(--radius-md);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 600;
+      font-size: 0.88rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), var(--shadow-cyan);
+      animation: slideRight 0.3s ease;
+    }
+    @keyframes slideRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .hero-title-main { font-size: 3.5rem; }
+      .features-grid-10 { grid-template-columns: repeat(3, 1fr); }
+      .unique-features-grid { grid-template-columns: repeat(3, 1fr); }
+      .rooms-layout-grid { grid-template-columns: 1fr; }
+      .mess-cards-row { grid-template-columns: 1fr; }
+      .dash-kpis-4 { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 900px) {
+      .nav-links-menu { display: none; }
+      .stats-grid-counters { grid-template-columns: repeat(2, 1fr); }
+      .updates-bulletin-grid { grid-template-columns: repeat(2, 1fr); }
+      .notices-grid-board { grid-template-columns: 1fr; }
+      .footer-content { grid-template-columns: 1fr; gap: 2rem; }
+    }
+    @media (max-width: 600px) {
+      .hero-title-main { font-size: 2.5rem; }
+      .stats-grid-counters { grid-template-columns: 1fr; }
+      .updates-bulletin-grid { grid-template-columns: 1fr; }
+      .features-grid-10 { grid-template-columns: repeat(2, 1fr); }
+      .unique-features-grid { grid-template-columns: 1fr; }
+      .dash-kpis-4 { grid-template-columns: 1fr; }
+      .dash-profile-row { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================================================
+       TOP NOTIFICATION TICKER & EMERGENCY BAR
+       ========================================================================== -->
+  <div class="top-emergency-strip">
+    <div>
+      <span class="emergency-link"><i class="fa-solid fa-shield-halved"></i> UGC Anti-Ragging Helpline (Toll-Free): 1800-180-5522</span>
+      <span style="margin: 0 0.75rem; opacity: 0.3;">|</span>
+      <span>Hostel Gate Security: <strong style="color: #fff;">+91 94123 99880</strong></span>
+    </div>
+    <div>
+      <span style="color: var(--cyan);"><i class="fa-solid fa-clock"></i> Mandatory Biometric In-Time: 9:30 PM Sharp</span>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       STICKY HEADER NAVIGATION
+       ========================================================================== -->
+  <header class="main-header">
+    <div class="nav-inner">
+      <div class="brand-wrap">
+        <div class="brand-logo-icon">
+          <i class="fa-solid fa-building-columns"></i>
+        </div>
+        <div class="brand-text">
+          <h2>Smart<span>Stay</span></h2>
+          <p>Indian College Student Hostel</p>
+        </div>
+      </div>
+
+      <ul class="nav-links-menu">
+        <li><a href="#hero">Home</a></li>
+        <li><a href="#stats">Overview</a></li>
+        <li><a href="#features">Facilities</a></li>
+        <li><a href="#rooms">Rooms</a></li>
+        <li><a href="#mess">Mess Menu</a></li>
+        <li><a href="#notices">Notices</a></li>
+        <li><a href="#dashboard">Student Portal</a></li>
+        <li><a href="#footer">Contact</a></li>
+      </ul>
+
+      <div style="display: flex; gap: 0.75rem;">
+        <button class="btn btn-glass btn-sm" onclick="openLoginModal('student')">
+          <i class="fa-solid fa-user-graduate"></i> Student Login
+        </button>
+        <button class="btn btn-glow-cyan btn-sm" onclick="openLoginModal('admin')">
+          <i class="fa-solid fa-user-tie"></i> Warden Portal
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       1. HERO SECTION (HD Hostel Background + Entrance Animation)
+       ========================================================================== -->
+  <section class="hero-container" id="hero">
+    <div class="hero-bg-image"></div>
+    <div class="hero-gradient-overlay"></div>
+
+    <div class="hero-inner-content">
+      <div class="hero-hostel-tag">
+        <i class="fa-solid fa-graduation-cap"></i> Pragati University Campus Residences
+      </div>
+
+      <h1 class="hero-title-main">
+        A Better Place to <span>Stay, Study & Grow</span>
+      </h1>
+
+      <p class="hero-lead-text">
+        Safe, disciplined, and community-driven student accommodation for engineering, medical, and university scholars. Equipped with 24/7 Wi-Fi, biometric security, hygienic mess, and quiet study halls.
+      </p>
+
+      <div class="hero-buttons-row">
+        <a href="#rooms" class="btn btn-glow-cyan">
+          <i class="fa-solid fa-door-open"></i> Explore Hostel Rooms
+        </a>
+        <button class="btn btn-glass" onclick="openLoginModal('student')">
+          <i class="fa-solid fa-arrow-right-to-bracket"></i> Student Login
+        </button>
+        <a href="#dashboard" class="btn btn-glass" style="border-color: var(--purple); color: #c084fc;">
+          <i class="fa-solid fa-gauge-high"></i> Dashboard Preview
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       2. ANIMATED STATISTICS / COUNTERS SECTION (SMOOTH 0 -> FINAL COUNT)
+       ========================================================================== -->
+  <section class="stats-counter-strip" id="stats">
+    <div class="stats-grid-counters">
+      <!-- 1. Rooms -->
+      <div class="stat-counter-card">
+        <div class="counter-icon"><i class="fa-solid fa-door-closed"></i></div>
+        <div class="counter-number">
+          <span class="animated-count" data-target="120">0</span><span class="suffix">+</span>
+        </div>
+        <div class="counter-label">Hostel Rooms</div>
+      </div>
+
+      <!-- 2. Students -->
+      <div class="stat-counter-card">
+        <div class="counter-icon"><i class="fa-solid fa-user-graduate"></i></div>
+        <div class="counter-number">
+          <span class="animated-count" data-target="450">0</span><span class="suffix">+</span>
+        </div>
+        <div class="counter-label">Resident Students</div>
+      </div>
+
+      <!-- 3. Beds -->
+      <div class="stat-counter-card">
+        <div class="counter-icon"><i class="fa-solid fa-bed"></i></div>
+        <div class="counter-number">
+          <span class="animated-count" data-target="520">0</span><span class="suffix">+</span>
+        </div>
+        <div class="counter-label">Allocated Beds</div>
+      </div>
+
+      <!-- 4. Hostel Blocks -->
+      <div class="stat-counter-card">
+        <div class="counter-icon"><i class="fa-solid fa-building"></i></div>
+        <div class="counter-number">
+          <span class="animated-count" data-target="4">0</span>
+        </div>
+        <div class="counter-label">Residential Blocks</div>
+      </div>
+    </div>
+
+    <!-- Daily Hostel Updates (4 Ticker Cards) -->
+    <div class="updates-bulletin-grid">
+      <!-- 1. Water Supply -->
+      <div class="bulletin-box" style="border-left-color: var(--cyan);">
+        <div class="bulletin-header">
+          <div class="bulletin-title"><i class="fa-solid fa-faucet-drip text-cyan"></i> Water Supply Hours</div>
+          <span class="badge badge-cyan">Daily</span>
+        </div>
+        <p class="bulletin-text">Morning: <strong>6:00 AM – 9:30 AM</strong> | Evening: <strong>5:00 PM – 8:30 PM</strong>. Solar water heaters active on all wings.</p>
+      </div>
+
+      <!-- 2. Mess Update -->
+      <div class="bulletin-box" style="border-left-color: var(--amber);">
+        <div class="bulletin-header">
+          <div class="bulletin-title"><i class="fa-solid fa-utensils text-amber"></i> Today's Mess Special</div>
+          <span class="badge badge-amber">Dinner</span>
+        </div>
+        <p class="bulletin-text">Dinner: <strong>Paneer Butter Masala</strong>, Arhar Dal Tadka, Fresh Chapati, Jeera Rice, Curd & Warm Gulab Jamun.</p>
+      </div>
+
+      <!-- 3. Maintenance -->
+      <div class="bulletin-box" style="border-left-color: var(--emerald);">
+        <div class="bulletin-header">
+          <div class="bulletin-title"><i class="fa-solid fa-screwdriver-wrench text-emerald"></i> Maintenance Notice</div>
+          <span class="badge badge-emerald">Done</span>
+        </div>
+        <p class="bulletin-text">Commercial RO water purifier filter replacement completed on 2nd Floor Block A. Electrician at Room A-102.</p>
+      </div>
+
+      <!-- 4. Warden Advisory -->
+      <div class="bulletin-box" style="border-left-color: var(--rose);">
+        <div class="bulletin-header">
+          <div class="bulletin-title"><i class="fa-solid fa-bullhorn text-rose"></i> Warden Advisory</div>
+          <span class="badge badge-rose">Curfew</span>
+        </div>
+        <p class="bulletin-text">Semester Exam study quiet hours enforced from 10 PM. Gate biometric scan closes strictly at 9:30 PM.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       3. HOSTEL FEATURES (10 Attractive Cards)
+       ========================================================================== -->
+  <section class="section-wrap" id="features">
+    <div class="section-header-center">
+      <div class="section-badge-pill"><i class="fa-solid fa-cubes"></i> Campus Infrastructure</div>
+      <h2 class="section-title">Hostel Facilities & <span>Amenities</span></h2>
+      <p class="section-subtitle">Practical, disciplined, and reliable facilities supporting continuous academic study and healthy student living.</p>
+    </div>
+
+    <div class="features-grid-10">
+      <!-- 1 -->
+      <div class="feature-card-item">
+        <div class="feature-icon-box"><i class="fa-solid fa-bed"></i></div>
+        <h4>Comfortable Rooms</h4>
+        <p>Sturdy wooden/metal cots, mattress, study desk with rack, and lockable almirah.</p>
+      </div>
+
+      <!-- 2 -->
+      <div class="feature-card-item">
+        <div class="feature-icon-box"><i class="fa-solid fa-wifi"></i></div>
+        <h4>High-Speed Wi-Fi</h4>
+        <p>NKN Gigabit campus network & individual LAN ports in every student room.</p>
+      </div>
+
+      <!-- 3 -->
+      <div class="feature-card-item">
+        <div class="feature-icon-box"><i class="fa-solid fa-bowl-food"></i></div>
+        <h4>Mess & Dining</h4>
+        <p>Hygienic 4-meal daily menu with North & South Indian dishes, salad, and curd.</p>
+      </div>
+
+      <!-- 4 -->
+      <div class="feature-card-item">
+        <div class="feature-icon-box"><i class="fa-solid fa-book-open-reader"></i></div>
+        <h4>24x7 Study Room</h4>
+        <p>Air-cooled quiet reading hall with power outlets for late-night exam revisions.</p>
+      </div>
+
+      <!-- 5 -->
+      <div class="feature-card-item">
+        <div class="feature-icon-box"><i class="fa-solid fa-faucet"></i></div>
+        <h4>Clean RO Water</h4>
+        <p>Industrial RO purifiers & refrigerated water dispensers with regular TDS checks.</p>
+      </div>
+
+      <!-- 6 -->
+      <div class="feature-card-item">
+        <div class="feature-icon-box"><i class="fa-solid fa-shirt"></i></div>
+        <h4>Laundry Service</h4>
+        <p>Semi-automatic washing machines and large rooftop drying terraces per block.</p>
+      </div>
+
+      <!-- 7 -->
+      <div class="feature-card-item">
+        <div class="feature-icon-box"><i class="fa-solid fa-video"></i></div>
+        <h4>CCTV & Security</h4>
+        <p>Facial recognition biometric gate turnstiles and 24/7 security guard patrol.</p>
+      </div>
+
+      <!-- 8 -->
+      <div class="feature-card-item">
+        <div class="feature-icon-box"><i class="fa-solid fa-bolt"></i></div>
+        <h4>Power Backup</h4>
+        <p>Heavy-duty DG generator sets ensuring fans, lights, and Wi-Fi never shut off.</p>
+      </div>
+
+      <!-- 9 -->
+      <div class="feature-card-item">
+        <div class="feature-icon-box"><i class="fa-solid fa-volleyball"></i></div>
+        <h4>Sports & Recreation</h4>
+        <p>Volleyball court, badminton court, table tennis, carrom, and cricket practice nets.</p>
+      </div>
+
+      <!-- 10 -->
+      <div class="feature-card-item">
+        <div class="feature-icon-box"><i class="fa-solid fa-user-tie"></i></div>
+        <h4>Warden Support</h4>
+        <p>Resident wardens, caretaker desk, and emergency medical ambulance on call.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       4. UNIQUE STUDENT FEATURES (12 Practical College Tools)
+       ========================================================================== -->
+  <section class="section-wrap" style="background: rgba(14, 20, 34, 0.45); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);">
+    <div class="section-header-center">
+      <div class="section-badge-pill"><i class="fa-solid fa-wand-magic-sparkles"></i> College Welfare Tools</div>
+      <h2 class="section-title">Unique <span>Student Services</span></h2>
+      <p class="section-subtitle">Digital utilities designed specifically for Indian college hostellers to manage outpasses, food, and room queries.</p>
+    </div>
+
+    <div class="unique-features-grid">
+      <!-- 1 -->
+      <div class="unique-feature-box" onclick="location.href='#rooms'">
+        <i class="fa-solid fa-door-open"></i>
+        <h4>1. Room Availability</h4>
+        <p>Live vacancy counters for Single, 2, 3, and 4 sharing rooms across all blocks.</p>
+      </div>
+
+      <!-- 2 -->
+      <div class="unique-feature-box" onclick="location.href='#dashboard'">
+        <i class="fa-solid fa-id-card-clip"></i>
+        <h4>2. Student Dashboard</h4>
+        <p>View verified profile, room allocation, mess card, and attendance meter.</p>
+      </div>
+
+      <!-- 3 -->
+      <div class="unique-feature-box" onclick="openModal('modal-outpass')">
+        <i class="fa-solid fa-plane-departure"></i>
+        <h4>3. Online Leave Outpass</h4>
+        <p>Apply for weekend outings or home leaves with auto-SMS alert to parents.</p>
+      </div>
+
+      <!-- 4 -->
+      <div class="unique-feature-box" onclick="openModal('modal-complaint')">
+        <i class="fa-solid fa-screwdriver-wrench"></i>
+        <h4>4. Complaint Management</h4>
+        <p>Register electrical, plumbing, carpentry, or Wi-Fi repairs with 24h SLA.</p>
+      </div>
+
+      <!-- 5 -->
+      <div class="unique-feature-box" onclick="location.href='#mess'">
+        <i class="fa-solid fa-calendar-days"></i>
+        <h4>5. Mess Weekly Menu</h4>
+        <p>7-day breakfast, lunch, and dinner dietary schedules with dietary tags.</p>
+      </div>
+
+      <!-- 6 -->
+      <div class="unique-feature-box" onclick="location.href='#notices'">
+        <i class="fa-solid fa-bullhorn"></i>
+        <h4>6. Hostel Notice Board</h4>
+        <p>Official circulars regarding exams, vacation dates, and mess committee meets.</p>
+      </div>
+
+      <!-- 7 -->
+      <div class="unique-feature-box" onclick="openModal('modal-visitor')">
+        <i class="fa-solid fa-user-shield"></i>
+        <h4>7. Visitor Entry Pass</h4>
+        <p>Pre-register parents and guardians for secure gate clearance.</p>
+      </div>
+
+      <!-- 8 -->
+      <div class="unique-feature-box" onclick="openModal('modal-room-change')">
+        <i class="fa-solid fa-arrows-split-up-and-left"></i>
+        <h4>8. Room Change Request</h4>
+        <p>Submit room shift or wing exchange applications for the upcoming term.</p>
+      </div>
+
+      <!-- 9 -->
+      <div class="unique-feature-box" onclick="location.href='#dashboard'">
+        <i class="fa-solid fa-list-check"></i>
+        <h4>9. Maintenance Tracking</h4>
+        <p>Track real-time progress on lodged complaints (Pending &rarr; Under Repair &rarr; Resolved).</p>
+      </div>
+
+      <!-- 10 -->
+      <div class="unique-feature-box" onclick="location.href='#footer'">
+        <i class="fa-solid fa-phone-volume text-rose"></i>
+        <h4>10. Emergency SOS</h4>
+        <p>Direct lines to Chief Warden, Campus Ambulance, and Anti-Ragging Helpline.</p>
+      </div>
+
+      <!-- 11 -->
+      <div class="unique-feature-box" onclick="openModal('modal-feedback')">
+        <i class="fa-solid fa-star text-amber"></i>
+        <h4>11. Student Feedback</h4>
+        <p>Rate mess food quality, cleanliness, and submit welfare recommendations.</p>
+      </div>
+
+      <!-- 12 -->
+      <div class="unique-feature-box" onclick="location.href='#stats'">
+        <i class="fa-solid fa-clock-rotate-left"></i>
+        <h4>12. Daily Hostel Updates</h4>
+        <p>Live water supply timings, dinner special, and warden circulars.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       5. ROOM SECTION (2, 3, 4 Sharing Realistic Indian College Accommodations)
+       ========================================================================== -->
+  <section class="section-wrap" id="rooms">
+    <div class="section-header-center">
+      <div class="section-badge-pill"><i class="fa-solid fa-bed"></i> Accommodation Types</div>
+      <h2 class="section-title">Hostel Rooms & <span>Sharing Options</span></h2>
+      <p class="section-subtitle">Grounded, comfortable, well-ventilated Indian college hostel rooms equipped with cots, study desks, and steel almirahs.</p>
+    </div>
+
+    <div class="rooms-layout-grid">
+      <!-- 2 Sharing -->
+      <div class="hostel-room-card">
+        <div class="room-media-frame">
+          <img src="https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=800&q=80" alt="2 Sharing Room">
+          <div class="room-sharing-badge">2 Sharing Room</div>
+        </div>
+        <div class="room-content-body">
+          <div>
+            <h3>Double Sharing Room</h3>
+            <p style="color: var(--text-muted); font-size: 0.88rem;">Comfortable shared room designed for 2nd and 3rd year students featuring dual study bays, cross-ventilation, and attached balcony.</p>
+
+            <div class="room-facilities-pills">
+              <span class="facility-pill"><i class="fa-solid fa-bed text-cyan"></i> 2 Individual Cots</span>
+              <span class="facility-pill"><i class="fa-solid fa-table text-cyan"></i> 2 Study Desks</span>
+              <span class="facility-pill"><i class="fa-solid fa-lock text-cyan"></i> 2 Steel Almirahs</span>
+              <span class="facility-pill"><i class="fa-solid fa-wifi text-cyan"></i> High-Speed Wi-Fi</span>
+              <span class="facility-pill"><i class="fa-solid fa-fan text-cyan"></i> Ceiling Fan</span>
+            </div>
+          </div>
+
+          <div class="room-card-bottom">
+            <div>
+              <div style="font-size: 0.72rem; color: var(--text-subtle); text-transform: uppercase;">Hostel Fee</div>
+              <div style="font-family: var(--font-display); font-size: 1.45rem; font-weight: 800; color: var(--cyan);">₹32,000 <small style="font-size: 0.75rem; color: var(--text-muted);">/ Semester</small></div>
+            </div>
+            <button class="btn btn-glow-cyan btn-sm" onclick="showRoomModal('Double Sharing Room (Block A & B)', '₹32,000 / Semester', '14 Vacant Beds', '2 Wooden cots, 2 ergonomic study tables with book racks, 2 Godrej steel almirahs, attached balcony, ceiling fan, and 1 Gbps LAN ports.')">
+              View Details <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3 Sharing -->
+      <div class="hostel-room-card">
+        <div class="room-media-frame">
+          <img src="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=800&q=80" alt="3 Sharing Room">
+          <div class="room-sharing-badge" style="color: var(--amber);">3 Sharing Room</div>
+        </div>
+        <div class="room-content-body">
+          <div>
+            <h3>Triple Sharing Room</h3>
+            <p style="color: var(--text-muted); font-size: 0.88rem;">Spacious shared room ideal for second-year students balancing study focus and peer collaboration with individual cupboards.</p>
+
+            <div class="room-facilities-pills">
+              <span class="facility-pill"><i class="fa-solid fa-bed text-amber"></i> 3 Separate Cots</span>
+              <span class="facility-pill"><i class="fa-solid fa-table text-amber"></i> 3 Study Tables</span>
+              <span class="facility-pill"><i class="fa-solid fa-lock text-amber"></i> Lockable Cupboards</span>
+              <span class="facility-pill"><i class="fa-solid fa-bolt text-amber"></i> Power Sockets</span>
+              <span class="facility-pill"><i class="fa-solid fa-wifi text-amber"></i> LAN & Wi-Fi</span>
+            </div>
+          </div>
+
+          <div class="room-card-bottom">
+            <div>
+              <div style="font-size: 0.72rem; color: var(--text-subtle); text-transform: uppercase;">Hostel Fee</div>
+              <div style="font-family: var(--font-display); font-size: 1.45rem; font-weight: 800; color: var(--amber);">₹28,000 <small style="font-size: 0.75rem; color: var(--text-muted);">/ Semester</small></div>
+            </div>
+            <button class="btn btn-glow-cyan btn-sm" onclick="showRoomModal('Triple Sharing Room (Block B & C)', '₹28,000 / Semester', '22 Vacant Beds', '3 Sturdy cots with mattresses, 3 individual study desks, lockable storage wardrobes, 2 ceiling fans, and high-speed Wi-Fi router.')">
+              View Details <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 Sharing -->
+      <div class="hostel-room-card">
+        <div class="room-media-frame">
+          <img src="https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80" alt="4 Sharing Room">
+          <div class="room-sharing-badge" style="color: var(--purple);">4 Sharing Room</div>
+        </div>
+        <div class="room-content-body">
+          <div>
+            <h3>Four Sharing Room</h3>
+            <p style="color: var(--text-muted); font-size: 0.88rem;">Vibrant, economical accommodation popular among first-year freshers to build lasting friendships and adjust to college life.</p>
+
+            <div class="room-facilities-pills">
+              <span class="facility-pill"><i class="fa-solid fa-bed text-purple"></i> 4 Single Cots</span>
+              <span class="facility-pill"><i class="fa-solid fa-table text-purple"></i> 4 Study Desks</span>
+              <span class="facility-pill"><i class="fa-solid fa-vault text-purple"></i> 4 Secure Lockers</span>
+              <span class="facility-pill"><i class="fa-solid fa-shield text-purple"></i> Anti-Ragging Zone</span>
+              <span class="facility-pill"><i class="fa-solid fa-wind text-purple"></i> 2 Ceiling Fans</span>
+            </div>
+          </div>
+
+          <div class="room-card-bottom">
+            <div>
+              <div style="font-size: 0.72rem; color: var(--text-subtle); text-transform: uppercase;">Hostel Fee</div>
+              <div style="font-family: var(--font-display); font-size: 1.45rem; font-weight: 800; color: #c084fc;">₹24,000 <small style="font-size: 0.75rem; color: var(--text-muted);">/ Semester</small></div>
+            </div>
+            <button class="btn btn-glow-cyan btn-sm" onclick="showRoomModal('Four Sharing Room (Freshers Block)', '₹24,000 / Semester', '32 Vacant Beds', '4 Single cots, individual study desks, 4 lockable steel lockers, 2 ceiling fans, cross-ventilation windows, and 24/7 power backup.')">
+              View Details <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       6. MESS SECTION (Weekly Indian College Menu)
+       ========================================================================== -->
+  <section class="section-wrap" id="mess">
+    <div class="section-header-center">
+      <div class="section-badge-pill"><i class="fa-solid fa-bowl-rice"></i> Student Mess</div>
+      <h2 class="section-title">Weekly Hostel <span>Mess Menu</span></h2>
+      <p class="section-subtitle">Wholesome, student-approved 4-meal daily diet schedule cooked fresh with quality ingredients and monitored by the Mess Committee.</p>
+    </div>
+
+    <!-- Day Selector Pills -->
+    <div class="mess-day-pills">
+      <button class="mess-day-tab active" onclick="loadMessMenu('Monday')">Monday</button>
+      <button class="mess-day-tab" onclick="loadMessMenu('Tuesday')">Tuesday</button>
+      <button class="mess-day-tab" onclick="loadMessMenu('Wednesday')">Wednesday</button>
+      <button class="mess-day-tab" onclick="loadMessMenu('Thursday')">Thursday</button>
+      <button class="mess-day-tab" onclick="loadMessMenu('Friday')">Friday</button>
+      <button class="mess-day-tab" onclick="loadMessMenu('Saturday')">Saturday</button>
+      <button class="mess-day-tab" onclick="loadMessMenu('Sunday')">Sunday (Special Feast)</button>
+    </div>
+
+    <!-- 3 Meal Cards Grid (Breakfast, Lunch, Dinner) -->
+    <div class="mess-cards-row" id="mess-cards-container">
+      <!-- Dynamic via JavaScript -->
+    </div>
+
+    <!-- Dietary Legend & Mess Feedback -->
+    <div class="glass-card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <div style="display: flex; gap: 1.5rem; align-items: center; font-size: 0.85rem;">
+        <div style="display: flex; align-items: center; gap: 0.45rem;">
+          <span class="diet-icon-dot veg"></span> <strong>100% Pure Vegetarian Meals</strong>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.45rem;">
+          <span class="diet-icon-dot non-veg"></span> <strong>Non-Veg / Egg Option (Wed & Sun)</strong>
+        </div>
+      </div>
+
+      <button class="btn btn-glass btn-sm" onclick="openModal('modal-feedback')">
+        <i class="fa-solid fa-star text-amber"></i> Give Mess Feedback
+      </button>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       7. NOTICE BOARD (Badges: NEW / IMPORTANT / UPDATE)
+       ========================================================================== -->
+  <section class="section-wrap" id="notices">
+    <div class="section-header-center">
+      <div class="section-badge-pill"><i class="fa-solid fa-bullhorn"></i> Official Circulars</div>
+      <h2 class="section-title">Hostel Notice <span>Board</span></h2>
+      <p class="section-subtitle">Latest administrative memos, examination schedules, and welfare announcements from Chief Warden & DSW office.</p>
+    </div>
+
+    <div class="notices-grid-board">
+      <!-- Notice 1 -->
+      <div class="notice-board-card" style="border-left-color: var(--rose);">
+        <div class="notice-top-row">
+          <span class="badge badge-rose">IMPORTANT</span>
+          <span style="font-size: 0.78rem; color: var(--text-subtle);"><i class="fa-regular fa-clock"></i> Today, 10:00 AM</span>
+        </div>
+        <h3>Night Curfew & Biometric In-Time Compliance</h3>
+        <p class="notice-desc">All resident students must record their biometric punch at the main entrance by 9:30 PM sharp. Students returning late without pre-approved warden outpasses will be marked late and parent will be notified.</p>
+      </div>
+
+      <!-- Notice 2 -->
+      <div class="notice-board-card" style="border-left-color: var(--cyan);">
+        <div class="notice-top-row">
+          <span class="badge badge-cyan">NEW</span>
+          <span style="font-size: 0.78rem; color: var(--text-subtle);"><i class="fa-regular fa-clock"></i> Yesterday</span>
+        </div>
+        <h3>Mid-Semester Examination Quiet Study Hours</h3>
+        <p class="notice-desc">Quiet hours will be observed from 10:00 PM to 6:00 AM across all blocks during examinations. Reading halls will remain open 24 hours with full AC and power backup. Loud music is strictly prohibited.</p>
+      </div>
+
+      <!-- Notice 3 -->
+      <div class="notice-board-card" style="border-left-color: var(--amber);">
+        <div class="notice-top-row">
+          <span class="badge badge-amber">UPDATE</span>
+          <span style="font-size: 0.78rem; color: var(--text-subtle);"><i class="fa-regular fa-clock"></i> Sep 28, 2026</span>
+        </div>
+        <h3>Sunday Grand Feast & Mess Review Committee</h3>
+        <p class="notice-desc">A special North & South Indian festive dinner (Paneer Pasanda, Chicken Biryani, Gulab Jamun) will be served this Sunday. Student mess representatives are requested to join the monthly feedback session at 5 PM.</p>
+      </div>
+
+      <!-- Notice 4 -->
+      <div class="notice-board-card" style="border-left-color: var(--emerald);">
+        <div class="notice-top-row">
+          <span class="badge badge-emerald">UPDATE</span>
+          <span style="font-size: 0.78rem; color: var(--text-subtle);"><i class="fa-regular fa-clock"></i> Sep 25, 2026</span>
+        </div>
+        <h3>Diwali & Vacation Hostel Leave Outpass Advisory</h3>
+        <p class="notice-desc">Students intending to travel home for the festive vacation must submit online leave requests with ticket details at least 48 hours prior to departure. Turn off lights and lock almirahs before leaving.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       8. STUDENT DASHBOARD PREVIEW
+       ========================================================================== -->
+  <section class="section-wrap" id="dashboard">
+    <div class="section-header-center">
+      <div class="section-badge-pill"><i class="fa-solid fa-gauge-high"></i> Resident Interface</div>
+      <h2 class="section-title">Student Dashboard <span>Preview</span></h2>
+      <p class="section-subtitle">Real-time glance at your profile, biometric attendance, active leave outpasses, and maintenance complaints.</p>
+    </div>
+
+    <div class="dashboard-preview-card">
+      <!-- Profile Header Row -->
+      <div class="dash-profile-row">
+        <div class="student-avatar-box">
+          <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80" alt="Student" class="student-avatar-img">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.2rem;">
+              <h3 style="font-family: var(--font-display); font-size: 1.45rem; font-weight: 800; color: #fff;">Aditya Verma</h3>
+              <span class="badge badge-emerald"><i class="fa-solid fa-shield-check"></i> Active Hosteller</span>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--cyan); font-weight: 600;">
+              B.Tech Computer Science (3rd Year, Semester VI) • Roll: <strong>22CSE042</strong>
+            </p>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+          <button class="btn btn-glow-cyan btn-sm" onclick="openModal('modal-outpass')">
+            <i class="fa-solid fa-plane-departure"></i> Apply Outpass
+          </button>
+          <button class="btn btn-glass btn-sm" onclick="openModal('modal-complaint')">
+            <i class="fa-solid fa-wrench"></i> Lodge Complaint
+          </button>
+        </div>
+      </div>
+
+      <!-- 4 Dashboard KPI Cards -->
+      <div class="dash-kpis-4">
+        <div class="dash-kpi-item">
+          <h5>Allocated Room</h5>
+          <div class="kpi-val" style="color: var(--cyan);">A-204</div>
+          <span style="font-size: 0.75rem; color: var(--text-muted);">Aryabhatta Block A (Bed 2)</span>
+        </div>
+
+        <div class="dash-kpi-item">
+          <h5>Biometric Attendance</h5>
+          <div class="kpi-val" style="color: var(--emerald);">91.4%</div>
+          <span style="font-size: 0.75rem; color: var(--text-muted);"><i class="fa-solid fa-check text-emerald"></i> Above 75% Rule</span>
+        </div>
+
+        <div class="dash-kpi-item">
+          <h5>Leave Status</h5>
+          <div class="kpi-val" style="color: var(--amber);" id="dash-leave-status-kpi">Approved</div>
+          <span style="font-size: 0.75rem; color: var(--text-muted);">Weekend City Outpass Active</span>
+        </div>
+
+        <div class="dash-kpi-item">
+          <h5>Pending Complaints</h5>
+          <div class="kpi-val" style="color: var(--rose);" id="dash-cmp-status-kpi">1 Active</div>
+          <span style="font-size: 0.75rem; color: var(--text-muted);">Fan Regulator Under Repair</span>
+        </div>
+      </div>
+
+      <!-- Recent Records Table -->
+      <h4 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; color: #fff; margin-bottom: 0.85rem;">
+        Active Applications & Requests
+      </h4>
+      <div class="table-responsive-box">
+        <table class="portal-table">
+          <thead>
+            <tr>
+              <th>ID / Ticket</th>
+              <th>Category</th>
+              <th>Details</th>
+              <th>Applied Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="dash-preview-tbody">
+            <tr>
+              <td><strong>OUT-2026-104</strong></td>
+              <td><span class="badge badge-cyan">Weekend Outpass</span></td>
+              <td>City Mall & Books Purchase (04:00 PM – 08:30 PM)</td>
+              <td>Today</td>
+              <td><span class="badge badge-emerald"><i class="fa-solid fa-check"></i> Approved</span></td>
+            </tr>
+            <tr>
+              <td><strong>CMP-8812</strong></td>
+              <td><span class="badge badge-amber">Electrical</span></td>
+              <td>Room A-204: Ceiling fan speed regulator faulty</td>
+              <td>Yesterday</td>
+              <td><span class="badge badge-amber"><i class="fa-solid fa-wrench"></i> Under Repair</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       9. FOOTER
+       ========================================================================== -->
+  <footer class="main-footer" id="footer">
+    <div class="footer-content">
+      <!-- Col 1 -->
+      <div class="footer-col">
+        <div class="brand-wrap" style="margin-bottom: 1rem;">
+          <div class="brand-logo-icon"><i class="fa-solid fa-building-columns"></i></div>
+          <div class="brand-text">
+            <h2>Smart<span>Stay</span></h2>
+            <p>Indian College Student Hostel</p>
+          </div>
+        </div>
+        <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; max-width: 360px;">
+          An official residential management system designed for Indian university scholars. Practical, disciplined, community-oriented student accommodation.
+        </p>
+        <div class="footer-social-icons">
+          <a href="#" class="social-btn" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+          <a href="#" class="social-btn" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+          <a href="#" class="social-btn" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+          <a href="#" class="social-btn" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+        </div>
+      </div>
+
+      <!-- Col 2 -->
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul class="footer-links">
+          <li><a href="#hero">Home</a></li>
+          <li><a href="#stats">Overview</a></li>
+          <li><a href="#features">Campus Facilities</a></li>
+          <li><a href="#rooms">Room Vacancy</a></li>
+          <li><a href="#mess">7-Day Mess Menu</a></li>
+          <li><a href="#notices">Notice Circulars</a></li>
+        </ul>
+      </div>
+
+      <!-- Col 3 -->
+      <div class="footer-col">
+        <h4>Student Services</h4>
+        <ul class="footer-links">
+          <li><a href="javascript:void(0)" onclick="openModal('modal-outpass')">Apply For Outpass</a></li>
+          <li><a href="javascript:void(0)" onclick="openModal('modal-complaint')">Lodge Maintenance Ticket</a></li>
+          <li><a href="javascript:void(0)" onclick="openModal('modal-room-change')">Room Change Request</a></li>
+          <li><a href="javascript:void(0)" onclick="openModal('modal-visitor')">Visitor Gate Pass</a></li>
+          <li><a href="javascript:void(0)" onclick="openModal('modal-feedback')">Mess Food Feedback</a></li>
+        </ul>
+      </div>
+
+      <!-- Col 4 -->
+      <div class="footer-col">
+        <h4>Hostel Office</h4>
+        <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 0.75rem;">
+          <i class="fa-solid fa-location-dot text-cyan"></i> Aryabhatta Hostel Campus,<br>
+          Pragati Technical University Enclave,<br>
+          Sector 62, Institutional Area
+        </p>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.4rem;">
+          <i class="fa-solid fa-phone text-cyan"></i> Security Desk: <strong>+91 94123 99880</strong>
+        </p>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">
+          <i class="fa-solid fa-envelope text-cyan"></i> warden.office@college.edu
+        </p>
+      </div>
+    </div>
+
+    <div style="max-width: 1380px; margin: 0 auto; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 1.75rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; font-size: 0.82rem; color: var(--text-subtle);">
+      <div>&copy; 2026 SmartStay – Pragati University Student Hostel. Designed for Indian college placement demos.</div>
+      <div>Modern & Practical Campus Edition v4.0</div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       MODALS: AUTH, OUTPASS, COMPLAINTS, ROOM CHANGE, VISITOR, FEEDBACK, ROOM INFO
+       ========================================================================== -->
+
+  <!-- Modal 1: Sign In -->
+  <div class="modal-overlay" id="modal-login">
+    <div class="modal-dialog">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h3 style="font-family: var(--font-display); font-size: 1.4rem; color: #fff;">SmartStay Portal Sign In</h3>
+        <button onclick="closeModal('modal-login')" style="color: var(--text-muted); font-size: 1.4rem;">&times;</button>
+      </div>
+
+      <div style="display: flex; background: #070b14; border: 1px solid var(--border-subtle); padding: 4px; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
+        <button class="btn btn-sm" id="auth-tab-stu" onclick="setAuthRole('student')" style="flex: 1; background: var(--cyan); color: #040814; font-weight: 800;">Student Login</button>
+        <button class="btn btn-sm" id="auth-tab-adm" onclick="setAuthRole('admin')" style="flex: 1; color: var(--text-muted);">Chief Warden</button>
+      </div>
+
+      <form onsubmit="handleAuthLogin(event)">
+        <div style="margin-bottom: 1rem;">
+          <label style="display: block; font-size: 0.82rem; margin-bottom: 0.4rem; color: #cbd5e1;">Roll Number or Warden Email</label>
+          <input type="text" id="auth-id-input" value="22CSE042" required>
+        </div>
+        <div style="margin-bottom: 1.5rem;">
+          <label style="display: block; font-size: 0.82rem; margin-bottom: 0.4rem; color: #cbd5e1;">Password</label>
+          <input type="password" id="auth-pass-input" value="student123" required>
+        </div>
+        <button type="submit" class="btn btn-glow-cyan" style="width: 100%; margin-bottom: 1rem;">
+          Sign In to SmartStay <i class="fa-solid fa-arrow-right"></i>
+        </button>
+
+        <div style="border-top: 1px dashed var(--border-subtle); padding-top: 1rem; text-align: center;">
+          <span style="font-size: 0.75rem; color: var(--text-subtle); text-transform: uppercase;">1-Click Demo Placement Accounts:</span>
+          <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+            <button type="button" class="btn btn-glass btn-sm" style="flex: 1;" onclick="fillDemoCredentials('student')">Fill Student</button>
+            <button type="button" class="btn btn-glass btn-sm" style="flex: 1;" onclick="fillDemoCredentials('admin')">Fill Warden</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 2: Apply for Leave / Outpass -->
+  <div class="modal-overlay" id="modal-outpass">
+    <div class="modal-dialog">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h3 style="font-family: var(--font-display); font-size: 1.4rem; color: #fff;">Apply for Hostel Outpass / Leave</h3>
+        <button onclick="closeModal('modal-outpass')" style="color: var(--text-muted); font-size: 1.4rem;">&times;</button>
+      </div>
+
+      <form onsubmit="handleOutpassSubmit(event)">
+        <div style="margin-bottom: 1rem;">
+          <label style="display: block; font-size: 0.82rem; margin-bottom: 0.4rem; color: #cbd5e1;">Leave Category</label>
+          <select id="outpass-type" required>
+            <option value="Weekend City Outing">Weekend City Outing (Local)</option>
+            <option value="Home Visit">Home Visit (Parent Station)</option>
+            <option value="Medical Leave">Medical Leave (Clinic / Hospital)</option>
+            <option value="Academic / Hackathon">Academic / College Hackathon</option>
+            <option value="Diwali Vacation">Diwali / Semester Vacation</option>
+          </select>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+          <div>
+            <label style="display: block; font-size: 0.82rem; margin-bottom: 0.4rem; color: #cbd5e1;">Leaving Date & Time</label>
+            <input type="datetime-local" id="outpass-start" required>
+          </div>
+          <div>
+            <label style="display: block; font-size: 0.82rem; margin-bottom: 0.4rem; color: #cbd5e1;">Return Date & Time</label>
+            <input type="datetime-local" id="outpass-end" required>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 1rem;">
+          <label style="display: block; font-size: 0.82rem; margin-bottom: 0.4rem; color: #cbd5e1;">Destination Address & City</label>
+          <input type="text" id="outpass-dest" placeholder="e.g. Kanpur, Civil Lines / Home Address" required>
+        </div>
+
+        <div style="margin-bottom: 1rem;">
+          <label style="display: block; font-size: 0.82rem; margin-bottom: 0.4rem; color: #cbd5e1;">Parent / Guardian Mobile (Auto-SMS Alert)</label>
+          <input type="tel" id="outpass-parent" value="+91 98765 00112" required>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+          <label style="display: block; font-size: 0.82rem; margin-bottom: 0.4rem; color: #cbd5e1;">Reason for Leave</label>
+          <textarea id="outpass-reason" rows="2" placeholder="Clear reason for absence..." required></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <button type="button" class="btn btn-glass btn-sm" onclick="closeModal('modal-outpass')">Cancel</button>
+          <button type="submit" class="btn btn-glow-cyan btn-sm">Submit Outpass</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 3: Lodge Maintenance Complaint -->
+  <div class="modal-overlay" id="modal-complaint">
+    <div class="modal-dialog">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h3 style="font-family: var(--font-display); font-size: 1.4rem; color: #fff;">Lodge Maintenance Complaint</h3>
+        <button onclick="closeModal('modal-complaint')" style="color: var(--text-muted); font-size: 1.4rem;">&times;</button>
+      </div>
+
+      <form onsubmit="handleComplaintSubmit(event)">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+          <div>
+            <label style="display: block; font-size: 0.82rem; margin-bottom: 0.4rem; color: #cbd5e1;">Category</label>
+            <select id="cmp-category" required>
+              <option value="Electrical">Electrical (Fan / Light / Plug)</option>
+              <option value="Plumbing">Plumbing (Tap / Flush / RO)</option>
+              <option value="Cleaning">Cleaning & Sweeping</option>
+              <option value="Wi-Fi / LAN">Wi-Fi & LAN Internet</option>
+              <option value="Mess & Food">Mess Food & Hygiene</option>
+              <option value="Furniture">Furniture (Almirah / Chair)</option>
+            </select>
+          </div>
+          <div>
+            <label style="display: block; font-size: 0.82rem; margin-bottom: 0.4rem; color: #cbd5e1;">Priority Level</label>
+            <select id="cmp-priority" required>
+              <option value="Low">Low (2-3 days)</option>
+              <option value="Medium" selected>Medium (Within 24h)</option>
+              <option value="High">High / Urgent (Same day)</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 1rem;">
+          <label style="display: block; font-size: 0.82rem; margin-bottom: 0.4rem; color: #cbd5e1;">Room Number & Block</label>
+          <input type="text" id="cmp-room" value="Room A-204 (Aryabhatta)" required>
+        </div>
+
+        <div style="margin-bottom: 1rem;">
+          <label style="display: block; font-size: 0.82rem; margin-bottom: 0.4rem; color: #cbd5e1;">Subject Summary</label>
+          <input type="text" id="cmp-sub" placeholder="e.g. Balcony tap leaking" required>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+          <label style="display: block; font-size: 0.82rem; margin-bottom: 0.4rem; color: #cbd5e1;">Description</label>
+          <textarea id="cmp-desc" rows="3" placeholder="Provide complete location details..." required></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <button type="button" class="btn btn-glass btn-sm" onclick="closeModal('modal-complaint')">Cancel</button>
+          <button type="submit" class="btn btn-glow-cyan btn-sm">Dispatch Ticket</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 4: Room Change Request -->
+  <div class="modal-overlay" id="modal-room-change">
+    <div class="modal-dialog">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h3 style="font-family: var(--font-display); font-size: 1.4rem; color: #fff;">Room Change Application</h3>
+        <button onclick="closeModal('modal-room-change')" style="color: var(--text-muted); font-size: 1.4rem;">&times;</button>
+      </div>
+
+      <form onsubmit="handleRoomChangeSubmit(event)">
+        <div style="margin-bottom: 1rem;">
+          <label style="display: block; font-size: 0.82rem; margin-bottom: 0.4rem; color: #cbd5e1;">Current Allotment</label>
+          <input type="text" value="Room A-204 (Double Sharing, Aryabhatta)" disabled style="opacity: 0.7;">
+        </div>
+
+        <div style="margin-bottom: 1rem;">
+          <label style="display: block; font-size: 0.82rem; margin-bottom: 0.4rem; color: #cbd5e1;">Requested Room Type</label>
+          <select id="req-room-type" required>
+            <option value="Single Seater Room">Single Seater Room (Final Year / M.Tech)</option>
+            <option value="Double Sharing Room">Double Sharing Room (Quiet Wing)</option>
+            <option value="Triple Sharing Room">Triple Sharing Room</option>
+          </select>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+          <label style="display: block; font-size: 0.82rem; margin-bottom: 0.4rem; color: #cbd5e1;">Reason for Room Change</label>
+          <textarea id="req-room-reason" rows="3" placeholder="Explain reason (e.g. academic research, medical condition, mutual exchange)..." required></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <button type="button" class="btn btn-glass btn-sm" onclick="closeModal('modal-room-change')">Cancel</button>
+          <button type="submit" class="btn btn-glow-cyan btn-sm">Submit To Warden Office</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 5: Visitor Entry Pass -->
+  <div class="modal-overlay" id="modal-visitor">
+    <div class="modal-dialog">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h3 style="font-family: var(--font-display); font-size: 1.4rem; color: #fff;">Pre-Register Visitor Pass</h3>
+        <button onclick="closeModal('modal-visitor')" style="color: var(--text-muted); font-size: 1.4rem;">&times;</button>
+      </div>
+
+      <form onsubmit="handleVisitorSubmit(event)">
+        <div style="margin-bottom: 1rem;">
+          <label style="display: block; font-size: 0.82rem; margin-bottom: 0.4rem; color: #cbd5e1;">Visitor Full Name</label>
+          <input type="text" id="vis-name" placeholder="e.g. Shri Ramesh Verma" required>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+          <div>
+            <label style="display: block; font-size: 0.82rem; margin-bottom: 0.4rem; color: #cbd5e1;">Relationship</label>
+            <select id="vis-rel">
+              <option value="Father">Father</option>
+              <option value="Mother">Mother</option>
+              <option value="Brother">Brother</option>
+              <option value="Sister">Sister</option>
+              <option value="Local Guardian">Local Guardian</option>
+            </select>
+          </div>
+          <div>
+            <label style="display: block; font-size: 0.82rem; margin-bottom: 0.4rem; color: #cbd5e1;">Phone Number</label>
+            <input type="tel" id="vis-phone" placeholder="+91 98000 00000" required>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+          <label style="display: block; font-size: 0.82rem; margin-bottom: 0.4rem; color: #cbd5e1;">Purpose of Visit</label>
+          <input type="text" id="vis-purpose" placeholder="e.g. Luggage delivery / semester meeting" required>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <button type="button" class="btn btn-glass btn-sm" onclick="closeModal('modal-visitor')">Cancel</button>
+          <button type="submit" class="btn btn-glow-cyan btn-sm">Generate Gate Token</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 6: Student Feedback -->
+  <div class="modal-overlay" id="modal-feedback">
+    <div class="modal-dialog">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h3 style="font-family: var(--font-display); font-size: 1.4rem; color: #fff;">Mess Food & Cleanliness Rating</h3>
+        <button onclick="closeModal('modal-feedback')" style="color: var(--text-muted); font-size: 1.4rem;">&times;</button>
+      </div>
+
+      <form onsubmit="handleFeedbackSubmit(event)">
+        <div style="margin-bottom: 1rem;">
+          <label style="display: block; font-size: 0.82rem; margin-bottom: 0.4rem; color: #cbd5e1;">Mess Food Taste & Hygiene Rating</label>
+          <select id="feed-taste">
+            <option value="5">⭐⭐⭐⭐⭐ Excellent (5 Stars)</option>
+            <option value="4" selected>⭐⭐⭐⭐ Good (4 Stars)</option>
+            <option value="3">⭐⭐⭐ Average (3 Stars)</option>
+            <option value="2">⭐⭐ Needs Improvement (2 Stars)</option>
+          </select>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+          <label style="display: block; font-size: 0.82rem; margin-bottom: 0.4rem; color: #cbd5e1;">Suggestions For Mess Welfare Committee</label>
+          <textarea id="feed-text" rows="3" placeholder="Give feedback on roti softness, dal thickness, breakfast timing, or RO filter..."></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <button type="button" class="btn btn-glass btn-sm" onclick="closeModal('modal-feedback')">Cancel</button>
+          <button type="submit" class="btn btn-glow-cyan btn-sm">Submit Feedback</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 7: Room View Details -->
+  <div class="modal-overlay" id="modal-room-details">
+    <div class="modal-dialog">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+        <h3 style="font-family: var(--font-display); font-size: 1.4rem; color: #fff;" id="rm-modal-title">Room Details</h3>
+        <button onclick="closeModal('modal-room-details')" style="color: var(--text-muted); font-size: 1.4rem;">&times;</button>
+      </div>
+
+      <div style="margin-bottom: 1.25rem;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+          <span style="color: var(--text-subtle);">Term Fee:</span>
+          <strong style="color: var(--cyan);" id="rm-modal-fee">₹32,000 / Semester</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+          <span style="color: var(--text-subtle);">Current Vacancy:</span>
+          <span class="badge badge-emerald" id="rm-modal-vacancy">14 Vacant Beds</span>
+        </div>
+        <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;" id="rm-modal-desc"></p>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end;">
+        <button class="btn btn-glow-cyan btn-sm" onclick="closeModal('modal-room-details'); openModal('modal-room-change');">
+          Apply For Allotment
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-wrap"></div>
+
+  <!-- ==========================================================================
+       COMPLETE JAVASCRIPT CONTROLLER
+       ========================================================================== -->
+  <script>
+    // ==========================================
+    // 1. ANIMATED STATISTICS / COUNTERS CONTROLLER
+    // ==========================================
+    let countersAnimated = false;
+
+    function animateCounters() {
+      if (countersAnimated) return;
+      countersAnimated = true;
+
+      const elements = document.querySelectorAll('.animated-count');
+      const duration = 1800; // 1.8 seconds
+
+      elements.forEach(el => {
+        const target = parseInt(el.getAttribute('data-target'), 10) || 0;
+        const startTime = performance.now();
+
+        function update(currentTime) {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          // Ease Out Quad
+          const easeOut = 1 - Math.pow(1 - progress, 3);
+          const currentVal = Math.floor(easeOut * target);
+
+          el.textContent = currentVal;
+
+          if (progress < 1) {
+            requestAnimationFrame(update);
+          } else {
+            el.textContent = target;
+          }
+        }
+
+        requestAnimationFrame(update);
+      });
+    }
+
+    // Trigger counters automatically when visible in screen
+    const statsObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateCounters();
+        }
+      });
+    }, { threshold: 0.25 });
+
+    // ==========================================
+    // 2. MESS MENU CONTROLLER (Indian 7-Day Diet)
+    // ==========================================
+    const WEEKLY_MESS_DATA = {
+      Monday: {
+        breakfast: ['Poha with Peanuts', 'Aloo Chana Curry', 'Bread & Jam', 'Hot Masala Chai / Milk'],
+        lunch: ['Arhar Dal Fry', 'Aloo Gobi Dry Sabzi', 'Steamed Rice', 'Tawa Chapati', 'Boondi Raita & Salad'],
+        dinner: ['Dal Makhani', 'Kadai Paneer (Veg)', 'Egg Curry (Non-Veg Option)', 'Jeera Rice', 'Warm Rice Kheer']
+      },
+      Tuesday: {
+        breakfast: ['Idli & Medu Vada', 'Drumstick Sambar', 'Coconut Chutney', 'Filter Coffee / Tea'],
+        lunch: ['Rajma Masala', 'Bhindi Fry', 'Basmati Rice', 'Rotis', 'Fresh Curd & Onion Salad'],
+        dinner: ['Yellow Moong Dal Tadka', 'Matar Paneer', 'Phulkas', 'Steamed Rice', 'Suji Halwa']
+      },
+      Wednesday: {
+        breakfast: ['Aloo Pyaz Paratha', 'Amul White Butter', 'Curd & Mixed Pickle', 'Hot Chai'],
+        lunch: ['Kadhi Pakoda', 'Jeera Aloo Sukha', 'Steamed Rice', 'Chapati', 'Roasted Papad'],
+        dinner: ['Paneer Tikka Masala (Veg)', 'Chicken Curry (Non-Veg)', 'Jeera Rice', 'Butter Roti', 'Gulab Jamun']
+      },
+      Thursday: {
+        breakfast: ['Rava Upma with Cashews', 'Chana Sambar', 'Banana / Boiled Egg', 'Tea & Coffee'],
+        lunch: ['Chole Bhature', 'Vegetable Pulao', 'Boondi Raita', 'Pickle & Green Salad'],
+        dinner: ['Dal Palak', 'Kashmiri Dum Aloo', 'Phulkas', 'Steamed Rice', 'Fruit Custard']
+      },
+      Friday: {
+        breakfast: ['Mysore Masala Dosa', 'Coconut & Tomato Chutney', 'Sambar', 'Filter Coffee'],
+        lunch: ['South Indian Thali: Sambar, Rasam, Cabbage Poriyal, Rice, Curd & Appalam'],
+        dinner: ['Hyderabadi Veg Biryani (Veg)', 'Chicken Biryani (Non-Veg)', 'Mirchi Ka Salan', 'Double Ka Meetha']
+      },
+      Saturday: {
+        breakfast: ['Puri Bhaji with Halwa', 'Curd & Pickle', 'Tea / Hot Milk'],
+        lunch: ['Lauki Chana Dal', 'Mix Veg Sukha', 'Steamed Rice', 'Chapati', 'Roasted Papad'],
+        dinner: ['Shahi Paneer', 'Tandoori Roti', 'Dal Tadka', 'Jeera Rice', 'Moong Dal Halwa']
+      },
+      Sunday: {
+        breakfast: ['Chole Kulche with Lassi', 'Boiled Eggs / Seasonal Fruit', 'Chai'],
+        lunch: ['Sunday Special Grand Feast: Dum Biryani, Shahi Paneer, Raita, Salad & Rasgulla'],
+        dinner: ['Khichdi / Roti', 'Aloo Gobi & Dal Fry', 'Papad & Fresh Curd']
+      }
+    };
+
+    function loadMessMenu(day) {
+      document.querySelectorAll('.mess-day-tab').forEach(tab => {
+        tab.classList.toggle('active', tab.textContent.trim().startsWith(day));
+      });
+
+      const menu = WEEKLY_MESS_DATA[day] || WEEKLY_MESS_DATA.Monday;
+      const container = document.getElementById('mess-cards-container');
+      if (!container) return;
+
+      const meals = [
+        {
+          name: 'Breakfast',
+          time: '07:30 AM – 09:15 AM',
+          img: 'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?auto=format&fit=crop&w=700&q=80',
+          items: menu.breakfast
+        },
+        {
+          name: 'Lunch',
+          time: '12:30 PM – 02:15 PM',
+          img: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=700&q=80',
+          items: menu.lunch
+        },
+        {
+          name: 'Dinner',
+          time: '07:45 PM – 09:30 PM',
+          img: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=700&q=80',
+          items: menu.dinner
+        }
+      ];
+
+      container.innerHTML = meals.map(m => `
+        <div class="mess-food-card">
+          <div class="mess-food-media">
+            <img src="${m.img}" alt="${m.name}">
+            <div class="meal-time-tag">${m.time}</div>
+          </div>
+          <div class="mess-food-content">
+            <h4>${m.name}</h4>
+            <ul class="food-dishes-list">
+              ${m.items.map(item => {
+                const isNonVeg = item.toLowerCase().includes('chicken') || item.toLowerCase().includes('egg');
+                return `
+                  <li class="food-dish-item">
+                    <span>${item}</span>
+                    <span class="diet-icon-dot ${isNonVeg ? 'non-veg' : 'veg'}" title="${isNonVeg ? 'Non-Vegetarian' : 'Pure Vegetarian'}"></span>
+                  </li>
+                `;
+              }).join('')}
+            </ul>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ==========================================
+    // 3. MODALS & TOAST CONTROLLER
+    // ==========================================
+    function openModal(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeModal(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    }
+
+    function showToast(msg) {
+      const wrap = document.getElementById('toast-wrap');
+      if (!wrap) return;
+      const t = document.createElement('div');
+      t.className = 'toast-msg';
+      t.innerHTML = `<i class="fa-solid fa-circle-check text-cyan"></i> <span>${msg}</span>`;
+      wrap.appendChild(t);
+      setTimeout(() => {
+        t.style.opacity = '0';
+        t.style.transition = 'all 0.3s ease';
+        setTimeout(() => t.remove(), 300);
+      }, 3500);
+    }
+
+    // Close on escape or outside click
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+        document.body.style.overflow = '';
+      }
+    });
+
+    // Room Details Modal Handler
+    function showRoomModal(title, fee, vacancy, desc) {
+      document.getElementById('rm-modal-title').textContent = title;
+      document.getElementById('rm-modal-fee').textContent = fee;
+      document.getElementById('rm-modal-vacancy').textContent = vacancy;
+      document.getElementById('rm-modal-desc').textContent = desc;
+      openModal('modal-room-details');
+    }
+
+    // Auth Switcher
+    let activeAuthRole = 'student';
+    function openLoginModal(role) {
+      activeAuthRole = role;
+      setAuthRole(role);
+      openModal('modal-login');
+    }
+
+    function setAuthRole(role) {
+      activeAuthRole = role;
+      const tabStu = document.getElementById('auth-tab-stu');
+      const tabAdm = document.getElementById('auth-tab-adm');
+      const inputId = document.getElementById('auth-id-input');
+
+      if (role === 'admin') {
+        tabStu.style.background = 'transparent'; tabStu.style.color = 'var(--text-muted)';
+        tabAdm.style.background = 'var(--cyan)'; tabAdm.style.color = '#040814';
+        inputId.value = 'warden.rajesh@college.edu';
+      } else {
+        tabStu.style.background = 'var(--cyan)'; tabStu.style.color = '#040814';
+        tabAdm.style.background = 'transparent'; tabAdm.style.color = 'var(--text-muted)';
+        inputId.value = '22CSE042';
+      }
+    }
+
+    function fillDemoCredentials(role) {
+      setAuthRole(role);
+      showToast(`Credentials filled for ${role.toUpperCase()}`);
+    }
+
+    function handleAuthLogin(e) {
+      e.preventDefault();
+      closeModal('modal-login');
+      const el = document.getElementById('dashboard');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+      showToast(`Welcome to SmartStay, ${activeAuthRole === 'admin' ? 'Chief Warden Dr. Rajesh Sharma' : 'Aditya Verma'}!`);
+    }
+
+    // Form Submissions
+    function handleOutpassSubmit(e) {
+      e.preventDefault();
+      const type = document.getElementById('outpass-type').value;
+      const dest = document.getElementById('outpass-dest').value;
+      const phone = document.getElementById('outpass-parent').value;
+
+      closeModal('modal-outpass');
+      showToast(`Outpass application for ${dest} submitted! Auto-SMS alert dispatched to parent (${phone}).`);
+
+      // Add to table
+      const tbody = document.getElementById('dash-preview-tbody');
+      if (tbody) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>OUT-2026-${Math.floor(100 + Math.random() * 900)}</strong></td>
+          <td><span class="badge badge-cyan">${type}</span></td>
+          <td>${dest}</td>
+          <td>Just now</td>
+          <td><span class="badge badge-amber"><i class="fa-solid fa-clock"></i> Pending Warden</span></td>
+        `;
+        tbody.prepend(tr);
+      }
+    }
+
+    function handleComplaintSubmit(e) {
+      e.preventDefault();
+      const cat = document.getElementById('cmp-category').value;
+      const sub = document.getElementById('cmp-sub').value;
+
+      closeModal('modal-complaint');
+      showToast(`Ticket lodged for ${sub}! Maintenance staff notified.`);
+
+      const tbody = document.getElementById('dash-preview-tbody');
+      if (tbody) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>CMP-${Math.floor(8000 + Math.random() * 1000)}</strong></td>
+          <td><span class="badge badge-amber">${cat}</span></td>
+          <td>${sub}</td>
+          <td>Just now</td>
+          <td><span class="badge badge-amber"><i class="fa-solid fa-wrench"></i> Under Repair</span></td>
+        `;
+        tbody.prepend(tr);
+      }
+    }
+
+    function handleRoomChangeSubmit(e) {
+      e.preventDefault();
+      const reqType = document.getElementById('req-room-type').value;
+      closeModal('modal-room-change');
+      showToast(`Room change application for ${reqType} registered with Warden Office.`);
+    }
+
+    function handleVisitorSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('vis-name').value;
+      const token = `PASS-${Math.floor(1000 + Math.random() * 9000)}`;
+      closeModal('modal-visitor');
+      showToast(`Security Gate Token ${token} generated for visitor ${name}!`);
+    }
+
+    function handleFeedbackSubmit(e) {
+      e.preventDefault();
+      closeModal('modal-feedback');
+      showToast('Thank you! Your feedback has been forwarded to the Mess Committee.');
+    }
+
+    // ==========================================
+    // 4. INITIALIZATION
+    // ==========================================
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Observe stats section for counter animation
+      const statsElem = document.getElementById('stats');
+      if (statsElem) {
+        statsObserver.observe(statsElem);
+      }
+
+      // Also start counter if already visible
+      setTimeout(() => {
+        if (!countersAnimated) {
+          const rect = statsElem?.getBoundingClientRect();
+          if (rect && rect.top < window.innerHeight) {
+            animateCounters();
+          }
+        }
+      }, 400);
+
+      // 2. Load Mess Menu for Monday
+      loadMessMenu('Monday');
+    });
+  </script>
+</body>
+</html>
